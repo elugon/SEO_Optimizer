@@ -1,0 +1,47 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    // Refactorización: Activar verificaciones estrictas para mejor type safety
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    
+    // Refactorización: Detectar código no utilizado
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    
+    // Mantener compatibilidad con código existente
+    "allowJs": true,
+    "skipLibCheck": true,
+    
+    // Modernización gradual
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    
+    // Optimización
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    // Paths y aliases
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@seo/*": ["src/lib/seo/*"],
+      "@services/*": ["src/lib/services/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules", ".tsbuildinfo"]
+}

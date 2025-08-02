@@ -1,0 +1,761 @@
+---
+// Import services for better separation of concerns
+---
+
+<section id="page-cards" class="section bg-secondary hidden">
+  <div class="container px-4 sm:px-6 lg:px-8">
+    <!-- Header Section -->
+    <div class="text-center mb-8 sm:mb-12">
+      <div class="badge badge-success mb-4 sm:mb-6">
+        <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Análisis Completado
+      </div>
+      
+      <h2 class="heading heading-lg text-primary mb-3 sm:mb-4">
+        Análisis SEO Detallado
+      </h2>
+      <p class="text-sm sm:text-base text-secondary/80 max-w-2xl mx-auto px-4">
+        Análisis completo de SEO con todas las comprobaciones técnicas incluidas
+      </p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div id="summary-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8" role="region" aria-label="Estadísticas del análisis SEO">
+      <div class="card p-4 sm:p-6 text-center">
+        <div class="size-10 bg-accent-blue/10 dark:bg-accent-blue/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div class="summary-pages heading heading-md text-primary mb-1">0</div>
+        <div class="text-xs sm:text-sm text-secondary/70">Páginas Analizadas</div>
+      </div>
+
+      <div class="card p-6 text-center">
+        <div class="size-10 bg-accent-green/10 dark:bg-accent-green/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-accent-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+        </div>
+        <div class="summary-avg-score heading heading-md text-accent-green mb-1">0</div>
+        <div class="text-xs sm:text-sm text-secondary/70">Puntuación SEO Promedio</div>
+      </div>
+
+      <div class="card p-6 text-center">
+        <div class="size-10 bg-accent-red/10 dark:bg-accent-red/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+          <svg class="w-5 h-5 text-accent-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="summary-issues heading heading-md text-accent-red mb-1">0</div>
+        <div class="text-xs sm:text-sm text-secondary/70">Problemas Encontrados</div>
+      </div>
+    </div>
+
+    <!-- Sort Controls - Mobile Responsive -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start lg:items-center mb-4 sm:mb-6 gap-3 sm:gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+        <span class="text-xs sm:text-sm text-secondary/80 font-medium">Ordenar por puntuación SEO:</span>
+        <div class="flex flex-wrap gap-2">
+          <button 
+            id="sort-asc-btn" 
+            class="btn btn-secondary btn-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/50 dark:focus:ring-accent-blue/40 focus:ring-offset-2 transition-all duration-200"
+            aria-label="Ordenar por puntuación SEO de menor a mayor"
+          >
+            <svg class="size-3 sm:size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+            </svg>
+            <span class="hidden sm:inline">Menor a Mayor</span>
+            <span class="sm:hidden text-lg">↑</span>
+          </button>
+          <button 
+            id="sort-desc-btn" 
+            class="btn btn-secondary btn-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/50 dark:focus:ring-accent-blue/40 focus:ring-offset-2 transition-all duration-200"
+            aria-label="Ordenar por puntuación SEO de mayor a menor"
+          >
+            <svg class="size-3 sm:size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"/>
+            </svg>
+            <span class="hidden sm:inline">Mayor a Menor</span>
+            <span class="sm:hidden text-lg">↓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Download Report Button - Mobile Responsive -->
+      <button 
+        id="download-report-btn" 
+        class="btn btn-primary btn-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/50 dark:focus:ring-accent-blue/40 focus:ring-offset-2 transition-all duration-200"
+        aria-label="Descargar reporte de análisis SEO en formato Markdown"
+      >
+        <svg class="size-4 sm:size-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-4-4m4 4l4-4m-6 4V3"/>
+        </svg>
+        <span class="hidden sm:inline">Descargar Reporte</span>
+        <span class="sm:hidden">Descargar</span>
+        <span class="badge badge-neutral ml-1 sm:ml-2 text-xs">MD</span>
+      </button>
+    </div>
+    
+    <!-- Cards Container - Mobile Responsive Grid -->
+    <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 mb-6 sm:mb-8" role="region" aria-label="Tarjetas de páginas analizadas">
+      <!-- Cards will be populated by JavaScript -->
+    </div>
+    
+    <!-- Pagination Controls -->
+    <div id="pagination-container" class="hidden mt-6 sm:mt-8 flex flex-col items-center gap-3 sm:gap-4" role="navigation" aria-label="Navegación de paginación">
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <button id="prev-page" class="btn btn-secondary btn-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/50 dark:focus:ring-accent-blue/40 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled aria-label="Ir a la página anterior">
+          <svg class="size-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span class="hidden sm:inline">Anterior</span>
+          <span class="sm:hidden">Ant.</span>
+        </button>
+        
+        <div id="page-numbers" class="flex items-center gap-1" role="navigation" aria-label="Navegación de páginas">
+          <!-- Page numbers will be inserted here -->
+        </div>
+        
+        <button id="next-page" class="btn btn-secondary btn-sm focus:outline-none focus:ring-2 focus:ring-accent-blue/50 dark:focus:ring-accent-blue/40 focus:ring-offset-2 transition-all duration-200" aria-label="Ir a la página siguiente">
+          <span class="hidden sm:inline">Siguiente</span>
+          <span class="sm:hidden">Sig.</span>
+          <svg class="size-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="text-xs sm:text-sm text-secondary/80 font-medium">
+        Mostrando <span id="showing-from">1</span> a <span id="showing-to">8</span> de <span id="total-pages">0</span> páginas
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- Modal for detailed recommendations -->
+<div id="recommendations-modal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden mx-4">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+      <div>
+        <h3 id="modal-title" class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+          Recomendaciones Detalladas
+        </h3>
+        <p id="modal-url" class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 truncate max-w-md">
+          <!-- URL will be inserted here -->
+        </p>
+      </div>
+      <button id="close-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-blue/50 dark:focus:ring-accent-blue/40 focus:ring-offset-2 rounded-md p-1" aria-label="Cerrar modal de recomendaciones">
+        <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Modal Content -->
+    <div class="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+      <div id="modal-content">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Import services and utilities
+import { pageCardService } from '../lib/services/page-card-service.js';
+import { DOMUtils } from '../lib/services/dom-utils.js';
+
+// Constants
+const ITEMS_PER_PAGE = 8;
+
+// Interfaces
+interface PageCardsElements {
+  section?: HTMLElement | null;
+  container?: HTMLElement | null;
+  summaryPages?: HTMLElement | null;
+  summaryAvgScore?: HTMLElement | null;
+  summaryIssues?: HTMLElement | null;
+  sortAscBtn?: HTMLElement | null;
+  sortDescBtn?: HTMLElement | null;
+  downloadBtn?: HTMLElement | null;
+  prevButton?: HTMLButtonElement | null;
+  nextButton?: HTMLButtonElement | null;
+  pageNumbers?: HTMLElement | null;
+  showingFrom?: HTMLElement | null;
+  showingTo?: HTMLElement | null;
+  totalPages?: HTMLElement | null;
+  paginationContainer?: HTMLElement | null;
+}
+
+interface PageCardsConfig {
+  itemsPerPage: number;
+  animationDuration: number;
+}
+
+// State Management with Single Responsibility
+class PageCardsStore {
+  private currentPage: number = 1;
+  private data: any = null;
+  private sortAscending: boolean = false;
+  private readonly config: PageCardsConfig = {
+    itemsPerPage: ITEMS_PER_PAGE,
+    animationDuration: 300
+  };
+
+  getCurrentPage(): number {
+    return this.currentPage;
+  }
+
+  setCurrentPage(page: number): void {
+    this.currentPage = page;
+  }
+
+  getData(): any {
+    return this.data;
+  }
+
+  setData(data: any): void {
+    this.data = data;
+  }
+
+  getSortOrder(): boolean {
+    return this.sortAscending;
+  }
+
+  setSortOrder(ascending: boolean): void {
+    this.sortAscending = ascending;
+  }
+
+  getConfig(): PageCardsConfig {
+    return this.config;
+  }
+}
+
+// DOM Manager with Single Responsibility
+class PageCardsDOMManager {
+  private elements: PageCardsElements = {};
+  private domCache: Map<string, any> = new Map();
+  private cacheVersion: number = 0;
+
+  init(): void {
+    this.elements = this.getCachedElements();
+  }
+
+  getElements(): PageCardsElements {
+    return this.elements;
+  }
+
+  private getCachedElements(): PageCardsElements {
+    const cacheKey = `elements_v${this.cacheVersion}`;
+    
+    if (this.domCache.has(cacheKey)) {
+      return this.domCache.get(cacheKey);
+    }
+
+    const elements = DOMUtils.findElements({
+      section: 'page-cards',
+      container: 'cards-container',
+      summaryPages: 'summary-pages',
+      summaryAvgScore: 'summary-avg-score',
+      summaryIssues: 'summary-issues',
+      sortAscBtn: 'sort-asc-btn',
+      sortDescBtn: 'sort-desc-btn',
+      downloadBtn: 'download-report-btn',
+      prevButton: 'prev-page',
+      nextButton: 'next-page',
+      pageNumbers: 'page-numbers',
+      paginationContainer: 'pagination-container',
+      showingFrom: 'showing-from',
+      showingTo: 'showing-to',
+      totalPages: 'total-pages'
+    });
+
+    this.domCache.set(cacheKey, elements);
+    this.cleanOldCache(cacheKey);
+    
+    return elements;
+  }
+
+  private cleanOldCache(currentKey: string): void {
+    for (const [key] of this.domCache) {
+      if (key !== currentKey) {
+        this.domCache.delete(key);
+      }
+    }
+  }
+
+  invalidateCache(): void {
+    this.cacheVersion++;
+  }
+
+  updateSummary(stats: any): void {
+    DOMUtils.updateText(this.elements.summaryPages, stats.totalPages);
+    DOMUtils.updateText(this.elements.summaryAvgScore, stats.avgScore);
+    DOMUtils.updateText(this.elements.summaryIssues, stats.totalIssues);
+  }
+
+  showSection(): void {
+    DOMUtils.toggleVisibility(this.elements.section, true);
+    if (this.elements.section) {
+      DOMUtils.scrollIntoView(this.elements.section);
+    }
+  }
+
+  updateContainer(html: string): void {
+    DOMUtils.updateHTML(this.elements.container, html);
+  }
+
+  updatePaginationInfo(startIndex: number, endIndex: number, total: number): void {
+    DOMUtils.updateText(this.elements.showingFrom, startIndex);
+    DOMUtils.updateText(this.elements.showingTo, endIndex);
+    DOMUtils.updateText(this.elements.totalPages, total);
+  }
+}
+
+// Event Manager with Single Responsibility
+class PageCardsEventManager {
+  private boundHandlers: Map<string, { element: HTMLElement | null, handler: EventListener, event: string }> = new Map();
+
+  bindEvents(
+    elements: PageCardsElements,
+    handlers: {
+      onSortAsc: () => void;
+      onSortDesc: () => void;
+      onDownload: () => void;
+      onPrevPage: () => void;
+      onNextPage: () => void;
+      onContainerClick: (e: Event) => void;
+      onPageNumberClick: (e: Event) => void;
+    }
+  ): void {
+    this.cleanup();
+
+    // Bind sort buttons
+    this.bindEvent('sortAsc', elements.sortAscBtn, 'click', handlers.onSortAsc);
+    this.bindEvent('sortDesc', elements.sortDescBtn, 'click', handlers.onSortDesc);
+    
+    // Bind download button
+    this.bindEvent('download', elements.downloadBtn, 'click', handlers.onDownload);
+    
+    // Bind pagination buttons
+    this.bindEvent('prev', elements.prevButton, 'click', handlers.onPrevPage);
+    this.bindEvent('next', elements.nextButton, 'click', handlers.onNextPage);
+    
+    // Event delegation
+    this.bindEvent('container', elements.container, 'click', handlers.onContainerClick);
+    this.bindEvent('pageNumbers', elements.pageNumbers, 'click', handlers.onPageNumberClick);
+  }
+
+  private bindEvent(key: string, element: HTMLElement | null | undefined, event: string, handler: EventListener): void {
+    if (element) {
+      element.addEventListener(event, handler);
+      this.boundHandlers.set(key, { element, handler, event });
+    }
+  }
+
+  cleanup(): void {
+    this.boundHandlers.forEach(({ element, handler, event }) => {
+      element?.removeEventListener(event, handler);
+    });
+    this.boundHandlers.clear();
+  }
+}
+
+// Modal Manager
+class ModalManager {
+  private modal: HTMLElement | null;
+  private modalTitle: HTMLElement | null;
+  private modalUrl: HTMLElement | null;
+  private modalContent: HTMLElement | null;
+  private closeBtn: HTMLElement | null;
+
+  constructor() {
+    this.modal = document.getElementById('recommendations-modal');
+    this.modalTitle = document.getElementById('modal-title');
+    this.modalUrl = document.getElementById('modal-url');
+    this.modalContent = document.getElementById('modal-content');
+    this.closeBtn = document.getElementById('close-modal');
+    
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    this.closeBtn?.addEventListener('click', () => this.hide());
+    
+    this.modal?.addEventListener('click', (e) => {
+      if (e.target === this.modal) {
+        this.hide();
+      }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.hide();
+      }
+    });
+  }
+
+  show(url: string, type: string, issues: any[]): void {
+    if (!this.modal || !this.modalTitle || !this.modalUrl || !this.modalContent) return;
+    
+    const typeTitle = type === 'critical' ? 'Problemas Críticos' : 'Oportunidades de Mejora';
+    this.modalTitle.textContent = typeTitle;
+    this.modalUrl.textContent = url;
+    
+    this.modalContent.innerHTML = this.generateModalContent(type, issues);
+    
+    this.modal.classList.remove('hidden');
+    this.modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  hide(): void {
+    if (this.modal) {
+      this.modal.classList.add('hidden');
+      this.modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+  }
+
+  private generateModalContent(type: string, issues: any[]): string {
+    if (issues.length === 0) {
+      return this.getEmptyStateContent(type);
+    }
+    
+    const issueColor = type === 'critical' ? 'red' : 'yellow';
+    const issueIcon = type === 'critical' ? '🚨' : '⚠️';
+    
+    return `
+      <div class="space-y-4">
+        ${this.getHeaderContent(type, issues.length, issueColor, issueIcon)}
+        <div class="space-y-3">
+          ${issues.map((issue, index) => this.getIssueContent(issue, index, issueColor)).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  private getEmptyStateContent(type: string): string {
+    return `
+      <div class="text-center py-6 sm:py-8">
+        <div class="text-4xl sm:text-6xl mb-3 sm:mb-4">✅</div>
+        <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          No se encontraron ${type === 'critical' ? 'problemas críticos' : 'oportunidades de mejora'}
+        </h3>
+        <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">
+          Esta página está bien optimizada en esta categoría.
+        </p>
+      </div>
+    `;
+  }
+
+  private getHeaderContent(type: string, count: number, color: string, icon: string): string {
+    const pluralText = count > 1 
+      ? (type === 'critical' ? 's Críticos' : 'es de Mejora') 
+      : (type === 'critical' ? ' Crítico' : ' de Mejora');
+    
+    return `
+      <div class="bg-${color}-50 dark:bg-${color}-900/20 border border-${color}-200 dark:border-${color}-800 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+        <h4 class="font-bold text-${color}-800 dark:text-${color}-300 mb-2 flex items-center text-sm sm:text-base">
+          <span class="text-xl sm:text-2xl mr-2">${icon}</span>
+          ${count} ${type === 'critical' ? 'Problema' : 'Oportunidad'}${pluralText}
+        </h4>
+        <p class="text-${color}-700 dark:text-${color}-400 text-xs sm:text-sm">
+          ${type === 'critical' 
+            ? 'Estos problemas requieren atención inmediata ya que pueden afectar significativamente tu posicionamiento en buscadores.'
+            : 'Estas mejoras pueden ayudarte a optimizar tu SEO y mejorar la experiencia del usuario.'
+          }
+        </p>
+      </div>
+    `;
+  }
+
+  private getIssueContent(issue: any, index: number, color: string): string {
+    return `
+      <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-3 sm:p-4">
+        <div class="flex items-start gap-3">
+          <div class="shrink-0 size-6 bg-${color}-100 dark:bg-${color}-900/30 rounded-full flex items-center justify-center">
+            <span class="text-${color}-600 dark:text-${color}-400 text-sm font-bold">${index + 1}</span>
+          </div>
+          <div class="flex-1">
+            <h5 class="font-semibold text-gray-900 dark:text-white mb-2 text-sm sm:text-base">
+              ${this.capitalizeFirst(issue.message)}
+            </h5>
+            <div class="space-y-1.5 sm:space-y-2">
+              <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+                <span class="bg-gray-100 dark:bg-gray-600 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-gray-700 dark:text-gray-300">
+                  📂 ${this.capitalizeFirst(issue.category || 'General')}
+                </span>
+                <span class="bg-${this.getPriorityColor(issue.priority)}-100 dark:bg-${this.getPriorityColor(issue.priority)}-900/30 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-${this.getPriorityColor(issue.priority)}-700 dark:text-${this.getPriorityColor(issue.priority)}-300">
+                  🎯 Prioridad ${this.getPriorityText(issue.priority)}
+                </span>
+              </div>
+              ${issue.recommendation ? `
+                <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 p-2 sm:p-3 mt-2 sm:mt-3">
+                  <p class="text-blue-800 dark:text-blue-300 text-xs sm:text-sm">
+                    <strong>💡 Recomendación:</strong> ${issue.recommendation}
+                  </p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  private capitalizeFirst(str: string): string {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  private getPriorityColor(priority: string): string {
+    const colors: Record<string, string> = {
+      'high': 'red',
+      'medium': 'yellow',
+      'low': 'green'
+    };
+    return colors[priority] || 'gray';
+  }
+
+  private getPriorityText(priority: string): string {
+    const texts: Record<string, string> = {
+      'high': 'Alta',
+      'medium': 'Media',
+      'low': 'Baja'
+    };
+    return texts[priority] || 'Desconocida';
+  }
+}
+
+// Main Controller with dependency injection
+class PageCardsController {
+  private store: PageCardsStore;
+  private domManager: PageCardsDOMManager;
+  private eventManager: PageCardsEventManager;
+  private modalManager: ModalManager;
+
+  constructor(
+    store: PageCardsStore,
+    domManager: PageCardsDOMManager,
+    eventManager: PageCardsEventManager,
+    modalManager: ModalManager
+  ) {
+    this.store = store;
+    this.domManager = domManager;
+    this.eventManager = eventManager;
+    this.modalManager = modalManager;
+  }
+
+  init(): void {
+    this.domManager.init();
+    this.bindEvents();
+  }
+
+  private bindEvents(): void {
+    const elements = this.domManager.getElements();
+    
+    this.eventManager.bindEvents(elements, {
+      onSortAsc: () => this.sortPages(true),
+      onSortDesc: () => this.sortPages(false),
+      onDownload: () => this.downloadReport(),
+      onPrevPage: () => this.changePage(this.store.getCurrentPage() - 1),
+      onNextPage: () => this.changePage(this.store.getCurrentPage() + 1),
+      onContainerClick: (e) => this.handleContainerClick(e),
+      onPageNumberClick: (e) => this.handlePageNumberClick(e)
+    });
+  }
+
+  displayPageCards(data: any): void {
+    this.store.setData(data);
+    
+    const stats = pageCardService.calculateSummaryStats(data);
+    this.domManager.updateSummary(stats);
+    
+    this.renderCurrentPage();
+    this.domManager.showSection();
+  }
+
+  showSkeletonCards(count: number): void {
+    const elements = this.domManager.getElements();
+    const skeletonHTML = DOMUtils.createLoadingSkeleton(Math.min(count, 10));
+    this.domManager.updateContainer(skeletonHTML);
+    DOMUtils.toggleVisibility(elements.section, true);
+  }
+
+  private sortPages(ascending: boolean): void {
+    this.store.setSortOrder(ascending);
+    this.store.setCurrentPage(1);
+    this.renderCurrentPage();
+  }
+
+  private changePage(newPage: number): void {
+    const data = this.store.getData();
+    if (!data?.pages) return;
+    
+    const config = this.store.getConfig();
+    const maxPage = Math.ceil(data.pages.length / config.itemsPerPage);
+    
+    if (newPage < 1 || newPage > maxPage) return;
+    
+    this.store.setCurrentPage(newPage);
+    this.renderCurrentPage();
+  }
+
+  private renderCurrentPage(): void {
+    const data = this.store.getData();
+    if (!data?.pages) return;
+
+    const pageData = data.pages.map((p: any) => pageCardService.extractPageData(p));
+    const sortedPages = pageCardService.sortPages(pageData, this.store.getSortOrder());
+    
+    const paginationResult = pageCardService.paginatePages(sortedPages, this.store.getCurrentPage());
+    
+    const cardsHTML = paginationResult.pages
+      .map((page: any) => pageCardService.generatePageCardHTML(page))
+      .join('');
+    
+    this.domManager.updateContainer(cardsHTML);
+    this.updatePaginationControls(paginationResult);
+  }
+
+  private updatePaginationControls(paginationResult: any): void {
+    const elements = this.domManager.getElements();
+    
+    if (paginationResult.totalPages <= 1) {
+      DOMUtils.toggleVisibility(elements.paginationContainer, false);
+      return;
+    }
+
+    DOMUtils.toggleVisibility(elements.paginationContainer, true);
+    
+    DOMUtils.updateButtonState(elements.prevButton, !paginationResult.hasPrev);
+    DOMUtils.updateButtonState(elements.nextButton, !paginationResult.hasNext);
+    
+    const currentPage = this.store.getCurrentPage();
+    const paginationHTML = DOMUtils.generatePaginationHTML(currentPage, paginationResult.totalPages);
+    DOMUtils.updateHTML(elements.pageNumbers, paginationHTML);
+    
+    const config = this.store.getConfig();
+    const data = this.store.getData();
+    const startIndex = (currentPage - 1) * config.itemsPerPage + 1;
+    const endIndex = Math.min(currentPage * config.itemsPerPage, data.pages.length);
+    
+    this.domManager.updatePaginationInfo(startIndex, endIndex, data.pages.length);
+  }
+
+  private handleContainerClick(e: Event): void {
+    const target = e.target as HTMLElement;
+    
+    const detailBtn = target.closest('.view-details-btn');
+    if (detailBtn) {
+      e.preventDefault();
+      const url = (detailBtn as HTMLElement).dataset.url;
+      if (url && window.viewPageDetails) {
+        window.viewPageDetails(url);
+      }
+      return;
+    }
+    
+    const criticalBtn = target.closest('.critical-issues-btn');
+    const opportunityBtn = target.closest('.improvement-opportunities-btn');
+    
+    if (criticalBtn || opportunityBtn) {
+      e.preventDefault();
+      const button = criticalBtn || opportunityBtn;
+      const url = (button as HTMLElement).dataset.url;
+      const type = (button as HTMLElement).dataset.type;
+      if (url && type) {
+        this.showRecommendationsModal(url, type);
+      }
+    }
+  }
+
+  private handlePageNumberClick(e: Event): void {
+    const target = e.target as HTMLElement;
+    const pageBtn = target.closest('.page-btn');
+    if (pageBtn) {
+      e.preventDefault();
+      const page = parseInt((pageBtn as HTMLElement).dataset.page || '1');
+      if (!isNaN(page)) {
+        this.changePage(page);
+      }
+    }
+  }
+
+  private showRecommendationsModal(url: string, type: string): void {
+    const data = this.store.getData();
+    if (!data?.pages) return;
+    
+    const pageResult = data.pages.find((p: any) => p.url === url);
+    if (!pageResult || pageResult.status !== 'success') return;
+    
+    const pageData = pageCardService.extractPageData(pageResult);
+    const issues = pageData.issues || [];
+    const filteredIssues = type === 'critical' 
+      ? issues.filter((issue: any) => issue.type === 'error')
+      : issues.filter((issue: any) => issue.type === 'warning');
+    
+    this.modalManager.show(url, type, filteredIssues);
+  }
+
+  private downloadReport(): void {
+    const data = this.store.getData();
+    if (!data) return;
+    
+    try {
+      const reportContent = pageCardService.generateMarkdownReport(data);
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `seo-analysis-report-${timestamp}.md`;
+      
+      DOMUtils.downloadFile(reportContent, filename, 'text/markdown');
+    } catch (error) {
+      console.error('Error generating report:', error);
+    }
+  }
+
+  cleanup(): void {
+    this.eventManager.cleanup();
+  }
+}
+
+// Initialize components
+const store = new PageCardsStore();
+const domManager = new PageCardsDOMManager();
+const eventManager = new PageCardsEventManager();
+const modalManager = new ModalManager();
+
+const pageCardsController = new PageCardsController(
+  store,
+  domManager,
+  eventManager,
+  modalManager
+);
+
+// Global functions for external access
+window.displayPageCards = (data) => pageCardsController.displayPageCards(data);
+window.showSkeletonCards = (count) => pageCardsController.showSkeletonCards(count);
+window.viewPageDetails = (_url: string) => {
+  // This could be extended to show a modal or navigate to detailed view
+  console.log('View page details for:', _url);
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  pageCardsController.init();
+  
+  // Make services available globally for compatibility
+  window.pageCardService = pageCardService;
+  window.DOMUtils = DOMUtils;
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  pageCardsController.cleanup();
+});
+</script>

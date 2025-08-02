@@ -1,0 +1,296 @@
+---
+// Server-side handling for analyze page
+const url = Astro.url.searchParams.get('url');
+const method = Astro.request.method;
+
+if (method === 'POST') {
+  // Handle POST request with form data
+  const formData = await Astro.request.formData();
+  const urlFromForm = formData.get('url') as string;
+  
+  if (urlFromForm) {
+    Astro.redirect(`/analyze?url=${encodeURIComponent(urlFromForm)}`);
+    return;
+  }
+}
+
+let analysisResult = null;
+let error = null;
+
+// If URL is provided, get analysis from our API
+if (url && method === 'GET') {
+  try {
+    const apiUrl = `${Astro.url.origin}/api/analyze-unified`;
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ url })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error en el análisis');
+    }
+
+    analysisResult = await response.json();
+  } catch (e) {
+    error = (e as Error).message || 'Error desconocido';
+  }
+}
+
+// Return JSON if requested
+const acceptHeader = Astro.request.headers.get('accept') || '';
+const formatParam = Astro.url.searchParams.get('format');
+const isJsonRequest = acceptHeader.includes('application/json') || formatParam === 'json';
+
+if (isJsonRequest) {
+  if (error) {
+    return new Response(JSON.stringify({ error }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  if (analysisResult) {
+    return new Response(JSON.stringify(analysisResult), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  return new Response(JSON.stringify({ error: 'No se proporcionó URL' }), {
+    status: 400,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis SEO</title>
+  <link href="/src/styles/global.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white min-h-screen p-8">
+  <div class="max-w-6xl mx-auto">
+    
+    {error && (
+      <div class="bg-red-900 border border-red-700 rounded-lg p-6 mb-8">
+        <h2 class="text-red-300 font-semibold mb-2">Error</h2>
+        <p class="text-red-200">{error}</p>
+      </div>
+    )}
+    
+    {analysisResult && (
+      <div class="space-y-8">
+        <!-- SEO Score -->
+        <div class="grid md:grid-cols-1 gap-6">
+          <div class="bg-gray-900 rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-white">SEO Score</h3>
+              <div class={`w-16 h-16 rounded-full flex items-center justify-center ${
+                analysisResult.performance.seoScore >= 80 ? 'bg-green-500' :
+                analysisResult.performance.seoScore >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+              }`}>
+                <span class="text-white font-bold text-xl">{analysisResult.performance.seoScore}</span>
+              </div>
+            </div>
+            <p class="text-gray-300">
+              {analysisResult.performance.seoScore >= 80 ? 'SEO Excelente' :
+               analysisResult.performance.seoScore >= 60 ? 'Buen SEO' : 'Necesita mejoras'}
+            </p>
+          </div>
+        </div>
+        
+        <!-- Issues -->
+        <div class="bg-gray-900 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-white mb-4">Problemas y Recomendaciones</h3>
+          <div class="space-y-3">
+            {analysisResult.issues.map((issue: any) => (
+              <div class="flex items-start space-x-3">
+                <div class={`w-6 h-6 rounded-full flex items-center justify-center ${
+                  issue.type === 'error' ? 'bg-red-400' :
+                  issue.type === 'warning' ? 'bg-yellow-400' : 'bg-green-400'
+                }`}>
+                  <span class="text-white text-sm font-bold">
+                    {issue.type === 'error' ? '✗' : issue.type === 'warning' ? '!' : '✓'}
+                  </span>
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-white font-medium">{issue.message}</h4>
+                  <div class="flex items-center space-x-4 mt-1">
+                    <span class="text-gray-400 text-sm">Prioridad: {issue.priority}</span>
+                    <span class="text-gray-500 text-sm">Categoría: {issue.category}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- Technical Details -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-gray-900 rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">SEO Técnico</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">HTTPS</span>
+                <span class={analysisResult.technical.hasSSL ? 'text-green-400' : 'text-red-400'}>
+                  {analysisResult.technical.hasSSL ? '✓' : '✗'}
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">URL Canónica</span>
+                <span class={analysisResult.technical.hasCanonical ? 'text-green-400' : 'text-red-400'}>
+                  {analysisResult.technical.hasCanonical ? '✓' : '✗'}
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Datos Estructurados</span>
+                <span class={analysisResult.technical.hasSchema ? 'text-green-400' : 'text-red-400'}>
+                  {analysisResult.technical.hasSchema ? '✓' : '✗'}
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Robots.txt</span>
+                <span class={analysisResult.technical.hasRobotsTxt ? 'text-green-400' : 'text-red-400'}>
+                  {analysisResult.technical.hasRobotsTxt ? '✓' : '✗'}
+                </span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Sitemap (hasSitemap={String(analysisResult.technical.hasSitemap)})</span>
+                <span class={analysisResult.technical.hasSitemap ? 'text-green-400' : 'text-red-400'}>
+                  {analysisResult.technical.hasSitemap ? '✓' : '✗'}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gray-900 rounded-xl p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Análisis de Contenido</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Título</span>
+                <span class="text-gray-300">{analysisResult.title ? '✓' : '✗'}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Descripción</span>
+                <span class="text-gray-300">{analysisResult.description ? '✓' : '✗'}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Imágenes</span>
+                <span class="text-gray-300">{analysisResult.images.total}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Enlaces Internos</span>
+                <span class="text-gray-300">{analysisResult.links.internal}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-300">Enlaces Externos</span>
+                <span class="text-gray-300">{analysisResult.links.external}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- Sitemap Details (if available) -->
+        {analysisResult.technical?.sitemap?.exists && (
+          <div class="bg-gray-900 rounded-xl p-6">
+            <h3 class="text-xl font-semibold text-white mb-4">Detalles del Sitemap</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-300">Formato</span>
+                  <span class="text-blue-400 uppercase">{analysisResult.technical.sitemap.format}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-300">Total URLs</span>
+                  <span class="text-white font-semibold">{analysisResult.technical.sitemap.totalUrls}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-300">URLs Válidas</span>
+                  <span class="text-green-400">{analysisResult.technical.sitemap.validUrls}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-300">URLs Inválidas</span>
+                  <span class="text-red-400">{analysisResult.technical.sitemap.invalidUrls}</span>
+                </div>
+              </div>
+              <div class="space-y-3">
+                {analysisResult.technical.sitemap.canonicalUrls !== undefined && (
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-300">URLs Canónicas</span>
+                    <span class="text-green-400">{analysisResult.technical.sitemap.canonicalUrls}</span>
+                  </div>
+                )}
+                {analysisResult.technical.sitemap.lowValueUrls !== undefined && (
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-300">Páginas Bajo Valor</span>
+                    <span class="text-yellow-400">{analysisResult.technical.sitemap.lowValueUrls}</span>
+                  </div>
+                )}
+                {analysisResult.technical.sitemap.responseTime && (
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-300">Tiempo Respuesta</span>
+                    <span class="text-blue-400">{analysisResult.technical.sitemap.responseTime}ms</span>
+                  </div>
+                )}
+                {analysisResult.technical.sitemap.truncated && (
+                  <div class="flex items-center justify-between">
+                    <span class="text-gray-300">Resultados Limitados</span>
+                    <span class="text-yellow-400">⚠</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {analysisResult.technical.sitemap.childSitemaps && analysisResult.technical.sitemap.childSitemaps.length > 0 && (
+              <div class="mt-4">
+                <h4 class="text-white font-medium mb-2">Sitemaps Hijo ({analysisResult.technical.sitemap.childSitemaps.length})</h4>
+                <div class="text-gray-400 text-sm">
+                  Se procesaron {analysisResult.technical.sitemap.childSitemaps.length} sitemaps hijo en el índice.
+                </div>
+              </div>
+            )}
+            
+            {analysisResult.technical.sitemap.urls && analysisResult.technical.sitemap.urls.length > 0 && (
+              <div class="mt-4">
+                <h4 class="text-white font-medium mb-2">
+                  Muestra de URLs (primeras {Math.min(10, analysisResult.technical.sitemap.urls.length)}
+                  {analysisResult.technical.sitemap.truncated && ` de ${analysisResult.technical.sitemap.totalUrls} total`})
+                </h4>
+                <div class="space-y-1 max-h-32 overflow-y-auto">
+                  {analysisResult.technical.sitemap.urls.slice(0, 10).map((urlData: any) => (
+                    <div class="flex items-center justify-between text-sm">
+                      <span class="text-gray-300 truncate flex-1 mr-2">{urlData.url}</span>
+                      <div class="flex items-center space-x-2">
+                        {urlData.isLowValue && <span class="text-yellow-400" title="Página de bajo valor">⚠</span>}
+                        {urlData.isCanonical === false && <span class="text-orange-400" title="URL no canónica">🔗</span>}
+                        {urlData.lastModified && <span class="text-gray-500 text-xs">{new Date(urlData.lastModified).toLocaleDateString()}</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {analysisResult.technical.sitemap.truncated && (
+                  <div class="mt-2 text-yellow-400 text-xs">
+                    ⚠ Análisis limitado a 100 URLs por rendimiento. Se encontraron {analysisResult.technical.sitemap.totalUrls} URLs en total.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+    
+    <div class="mt-8">
+      <a href="/" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
+← Volver al Analizador
+      </a>
+    </div>
+  </div>
+</body>
+</html>

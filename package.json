@@ -1,0 +1,33 @@
+{
+  "name": "seo-optimizer",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "The only open-source multi-page SEO analyzer available on GitHub. A sophisticated, free SEO analysis tool built with Astro and modern web technologies",
+  "keywords": ["seo", "analyzer", "astro", "typescript", "optimization", "web-performance", "e-a-t", "security-headers", "multi-page", "open-source", "seo-audit", "website-analyzer"],
+  "author": "SEO Optimizer Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/seo-optimizer.git"
+  },
+  "homepage": "https://github.com/yourusername/seo-optimizer#readme",
+  "bugs": {
+    "url": "https://github.com/yourusername/seo-optimizer/issues"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "astro check",
+    "typecheck": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/node": "^9.3.0",
+    "@tailwindcss/vite": "^4.1.11",
+    "astro": "^5.12.1",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.9.2"
+  }
+}
